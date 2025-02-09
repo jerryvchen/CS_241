@@ -1,32 +1,94 @@
 ### Tokenizer
-id = -1     # identifier id (not used)
-numval = 0  # last int val
-
-input_str = ""
+# Not really needed as this version goes character-by-character
+input_str = input()
 i = 0
+sym = None
 
-def getNext():
-    while input_str[i].isspace():
-        i += 1
+# initialize sym
+while i < len(input_str):
+    sym = input_str[i]
+    if not sym.isspace():
+        break
     i += 1
-    return input_str[i - 1]
+
+def get_next():
+    global i
+    global sym
+    i += 1
+    while i < len(input_str) and input_str[i].isspace():
+        i += 1
+
+    if i < len(input_str):
+        sym = input_str[i]
+    else:
+        sym = None
+
 
 ### Parser
-sym = None  # token at the front of input
-def next():
-    getNext()
+def digit():
+    if sym.isdigit():
+        res = int(sym)
+        get_next()
+        return res
+    return None
 
-def checkFor(token):
-    if sym == token:
-        return True
-    return False
+def number():
+    res = digit()
+    next_digit = digit()
+    while next_digit:
+        res = res * 10 + next_digit
+        next_digit = digit()
+    
+    return res
 
-def E():
-    pass
+def factor():
+    if sym == '(':
+        get_next()
+        res = expression()
+        if sym == ')':
+            get_next()
+            return res
+        else:
+            raise SyntaxError
+    else:
+        return number()
 
-def T():
-    pass
+def term():
+    res = factor()
+    if sym == '*':
+        get_next() # consume 
+        next_factor = factor()
+        return res * next_factor
+    
+    elif sym == '/':
+        get_next()
+        next_factor = factor()
+        return res // next_factor
 
-def F():
-    pass
+    return res
+    
+def expression():
+    res = term()
+    if sym == '+':
+        get_next()
+        next_term = term()
+        return res + next_term
+    elif sym == '-':
+        get_next()
+        next_term = term()
+        return res - next_term
+    
+    return res
 
+def computation():
+    res = expression()
+
+    if sym == '.':
+        get_next()
+        print(res)
+    else:
+        raise SyntaxError
+
+if __name__ == "__main__":
+    while sym:
+        computation()

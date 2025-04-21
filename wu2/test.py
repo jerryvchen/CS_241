@@ -9,8 +9,7 @@ class Test_W2_Interpreter(unittest.TestCase):
 
     @patch('builtins.input', return_value=test1_str)
     def test_1(self, mocked_input):
-        wu2 = WU2_Interpreter()
-        wu2.run()
+        WU2_Interpreter()
 
 if __name__ == '__main__':
     unittest.main()

@@ -8,16 +8,23 @@ from FileReader import FileReader
 
 class Tokenizer:
     """
-    pass
+    The Tokenizer is responsible for creating smpl tokens and sending it to 
+    the smpl parser. \n
+    
+    It is implemented via a finite-state machine (FSM), with state transitions 
+    done through the character stream of the FileReader. 
     """
 
-    def __init__(self, fileName: str) -> None:
+    def __init__(self, file_name: str) -> None:
         """
-        idk
+        Initializes the Tokenizer class.
+
+        :param file_name: Path to the input file.
+        :type file_name: str
         """
         # Private
-        self.__fileReader: FileReader = FileReader(fileName)
-        self.__input_sym: str = ''
+        self.__fileReader: FileReader = FileReader(file_name)
+        self.__input_sym: str = self.__fileReader.get_next()
 
         # Public
         self.number: int = -1   # last number encountered

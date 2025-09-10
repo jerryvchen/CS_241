@@ -23,10 +23,10 @@ class FileReader:
         :param file_name: Path to the input file.
         :type file_name: str
         """
-        self.file_name: str = file_name
-        self.is_error: bool = False
+        self.__file_name: str = file_name
+        self.__is_error: bool = False
         try:
-            self._char_generator: Generator[str, None, None] = self.__get_next_util()
+            self.__char_generator: Generator[str, None, None] = self.__get_next_util()
         except Exception as e:
             self.error(str(e))
     
@@ -37,7 +37,7 @@ class FileReader:
         :param err_msg: Error message to be shown.
         :type err_msg: str
         """
-        self.is_error = True
+        self.__is_error = True
         print(err_msg)
 
     def get_next(self) -> str | int:
@@ -47,11 +47,11 @@ class FileReader:
         :return: Next character in the file.
         :rtype: str
         """
-        if self.is_error: 
+        if self.__is_error: 
             return FileReader.Error
 
         try:
-            ch: str = next(self._char_generator)
+            ch: str = next(self.__char_generator)
             return ch
         except StopIteration:
             return FileReader.EOF
@@ -65,7 +65,7 @@ class FileReader:
         :rtype: Generator 
         """
         try:
-            with open(self.file_name, 'r') as file:
+            with open(self.__file_name, 'r') as file:
                 while True:
                     ch: str | None = file.read(1)
                     if not ch:

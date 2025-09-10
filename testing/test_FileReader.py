@@ -59,7 +59,7 @@ class TestFileReader(unittest.TestCase):
         err_msg = "sample error"
         reader.error(err_msg)
 
-        self.assertTrue(reader.is_error)
+        self.assertTrue(reader._FileReader__is_error)
         mock_print.assert_called_once_with(err_msg)
 
     @patch('builtins.print')

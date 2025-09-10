@@ -4,7 +4,6 @@ FileReader.py
 Contains the implementation of the FileReader class. 
 """
 
-from Exceptions import CompileError
 from typing import Generator
 
 class FileReader:
@@ -26,16 +25,20 @@ class FileReader:
         """
         self.file_name: str = file_name
         self.is_error: bool = False
+        try:
+            self._char_generator: Generator[str, None, None] = self.__get_next_util()
+        except Exception as e:
+            self.error(str(e))
     
     def error(self, err_msg: str) -> None:
         """
-        Raises an error with the given error message.
+        Prints the error message. 
 
         :param err_msg: Error message to be shown.
         :type err_msg: str
         """
         self.is_error = True
-        raise CompileError(err_msg)
+        print(err_msg)
 
     def get_next(self) -> str | int:
         """
@@ -47,11 +50,11 @@ class FileReader:
         if self.is_error: 
             return FileReader.Error
 
-        ch: str = self.__get_next_util()
-        if ch == '':
+        try:
+            ch: str = next(self._char_generator)
+            return ch
+        except StopIteration:
             return FileReader.EOF
-        
-        return ch
             
     def __get_next_util(self) -> Generator[str, None, None]:
         """
@@ -63,9 +66,10 @@ class FileReader:
         """
         try:
             with open(self.file_name, 'r') as file:
-                ch: str | None = file.read(1)
-                while ch:
-                    ch = file.read(1)
+                while True:
+                    ch: str | None = file.read(1)
+                    if not ch:
+                        break
                     yield ch
         except Exception as e:
-            self.error(e)
+            self.error(str(e))
